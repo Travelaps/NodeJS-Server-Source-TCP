@@ -12,3 +12,10 @@ pm2 start app.js -o /dev/null -e /dev/null --name 3CX --max-memory-restart 200M 
 pm2 start app.js -o /dev/null -e /dev/null --name Salto --max-memory-restart 200M --restart-delay 100 -- CS=2 CE=3 NM=Salto PORT=42275 CX=1
 ```
 4. pm2 save
+
+# Parameters
+* CS: Sequence starting character, this is mostly 2(STX)
+* CE: Sequence ending character, this is mostly 3(ETX)
+* CX: Whether to send LS message to the connecting client
+* PORT: On which TCP port to listen on
+* AUTH: Authorization header Bearer token (optional)
