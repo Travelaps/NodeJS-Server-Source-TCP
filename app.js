@@ -11,7 +11,7 @@ exports.conf = {
 	NM: 0,//Name of the ApiSequence
 	PORT: 0,//Port to Listen On
 	CX:0,//Wether to greet client with ACK+LS|
-	LT:0//LoginToken to be forwarded 
+	AUTH:0//LoginToken to be forwarded 
 };
 exports.proxyHeaders = {
 	
@@ -24,8 +24,8 @@ for (var i = 0; i < process.argv.length; i++){
 	if(exports.conf[key] === 0)
 		exports.conf[ key ] = val;
 }
-if(exports.conf["LT"] !== 0)
-	exports.proxyHeaders["authorization"] = "Bearer " + exports.conf["LT"];
+if(exports.conf["AUTH"] !== 0)
+	exports.proxyHeaders["authorization"] = "Bearer " + exports.conf["AUTH"];
 console.log(exports.conf);		
 
 process.on('uncaughtException', function (error) {
