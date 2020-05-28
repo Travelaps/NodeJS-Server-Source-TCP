@@ -11,7 +11,8 @@ exports.conf = {
 	NM: 0,//Name of the ApiSequence
 	PORT: 0,//Port to Listen On
 	CX:0,//Wether to greet client with ACK+LS|
-	AUTH:0//LoginToken to be forwarded 
+	AUTH:0,//LoginToken to be forwarded 
+	TIMEOUT:0
 };
 exports.proxyHeaders = {
 	
@@ -26,6 +27,11 @@ for (var i = 0; i < process.argv.length; i++){
 }
 if(exports.conf["AUTH"] !== 0)
 	exports.proxyHeaders["authorization"] = "Bearer " + exports.conf["AUTH"];
+if(exports.conf["TIMEOUT"] === 0)
+	exports.conf["TIMEOUT"] = 15000;//DEFAULT 15 seconds
+else
+	exports.conf["TIMEOUT"] = exports.conf["TIMEOUT"] * 1000;
+
 console.log(exports.conf);		
 
 process.on('uncaughtException', function (error) {
@@ -40,7 +46,7 @@ var server = net.createServer((socket)=>{
 		ip = ip.split(',')[0];
 		ip = ip.split(':').filter(f=> f.indexOf('.') > 0)[0];
 	}
-	var killtime = setTimeout( ()=>{ socket.destroy(); console.log("Conection ("+ip+") killed by server") } ,15000);
+	var killtime = setTimeout( ()=>{ socket.destroy(); console.log("Conection ("+ip+") killed by server") } ,exports.conf["TIMEOUT"]);
 	
 	
 	console.log( ip + " initiated connection" );
@@ -54,7 +60,7 @@ var server = net.createServer((socket)=>{
 	
 	socket.on('data', function(chunk){
 		clearTimeout(killtime);
-		killtime = setTimeout( ()=>{ socket.destroy(); console.log("Conection ("+ip+") killed by server") } ,15000);
+		killtime = setTimeout( ()=>{ socket.destroy(); console.log("Conection ("+ip+") killed by server") } ,exports.conf["TIMEOUT"]);
 		
 		//New request from this client has started..
 		if(chunk[0]==exports.conf.CS)
