@@ -1,7 +1,7 @@
 //pm2 start app.js -o /dev/null -e /dev/null --name Vectron --max-memory-restart 200M --restart-delay 100 -- CS=2 CE=3 NM=Vectron PORT=52275
 //pm2 start app.js -o /dev/null -e /dev/null --name 3CX --max-memory-restart 200M --restart-delay 100 -- CS=2 CE=3 NM=3CX PORT=62275 CX=1
 //pm2 start app.js -o /dev/null -e /dev/null --name Salto --max-memory-restart 200M --restart-delay 100 -- CS=2 CE=3 NM=Salto PORT=42275 CX=1
-
+//pm2 start app.js -o /dev/null -e /dev/null --name Philips --max-memory-restart 200M --restart-delay 100 -- CS=2 CE=3 NM=PhilipsIPTV PORT=44444
 
 var net = require('net');
 const request = require('request');
@@ -32,7 +32,10 @@ if(exports.conf["TIMEOUT"] === 0)
 else
 	exports.conf["TIMEOUT"] = exports.conf["TIMEOUT"] * 1000;
 
-console.log(exports.conf);		
+setTimeout(()=>{
+	console.log(exports.conf);	
+},2000);
+		
 
 process.on('uncaughtException', function (error) {
     if (error != null)
@@ -52,7 +55,7 @@ var server = net.createServer((socket)=>{
 	console.log( ip + " initiated connection" );
 	//SEND ACK
 	if(exports.conf.CX != 0){
-		socket.write(Buffer.from([6]));
+		//socket.write(Buffer.from([6]));
 		socket.write(Buffer.from([exports.conf.CS]));
 		socket.write(Buffer.from("LS|DA200512|TI170501|"));
 		socket.write(Buffer.from([exports.conf.CE]));	
