@@ -12,7 +12,8 @@ exports.conf = {
 	PORT: 0,//Port to Listen On
 	CX:0,//Wether to greet client with ACK+LS|
 	AUTH:0,//LoginToken to be forwarded 
-	TIMEOUT:0
+	TIMEOUT:0,
+	WRAPRESPONSE:1
 };
 exports.proxyHeaders = {
 	
@@ -22,7 +23,7 @@ for (var i = 0; i < process.argv.length; i++){
 	var arg = process.argv[i];
 	var key = arg.split('=')[0];
 	var val = arg.split('=').pop();
-	if(exports.conf[key] === 0)
+	if(exports.conf[key] != null)
 		exports.conf[ key ] = val;
 }
 if(exports.conf["AUTH"] !== 0)
@@ -85,13 +86,17 @@ var server = net.createServer((socket)=>{
 					url: "https://4001.hoteladvisor.net/apisequence/"+exports.conf.NM+"?IP="+ip,
 					method: "POST",
 					body: fullText,
-					headers: exports.proxyHeaders
+					headers: exports.proxyHeaders,
+					encoding: null
 				}, (err, response, responseBody) => {
 					if(responseBody != null && responseBody.toString() > ''){
-						socket.write(Buffer.from([exports.conf.CS]));
-						socket.write(responseBody);
-						console.log( ip + " was replied with "+responseBody );
-						socket.write(Buffer.from([exports.conf.CE]));
+						if( exports.conf.WRAPRESPONSE == 1 )
+							socket.write(Buffer.from([exports.conf.CS]));
+						let resp = Buffer.from( responseBody );
+						socket.write(resp);
+						console.log( ip + " was replied with "+resp );
+						if( exports.conf.WRAPRESPONSE == 1 )
+							socket.write(Buffer.from([exports.conf.CE]));
 					}					
 				});	
 			},1000);
