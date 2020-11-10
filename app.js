@@ -2,6 +2,7 @@
 //pm2 start app.js -o /dev/null -e /dev/null --name 3CX --max-memory-restart 200M --restart-delay 100 -- CS=2 CE=3 NM=3CX PORT=62275 CX=1
 //pm2 start app.js -o /dev/null -e /dev/null --name Salto --max-memory-restart 200M --restart-delay 100 -- CS=2 CE=3 NM=Salto PORT=42275 CX=1
 //pm2 start app.js -o /dev/null -e /dev/null --name Philips --max-memory-restart 200M --restart-delay 100 -- CS=2 CE=3 NM=PhilipsIPTV PORT=44444
+//pm2 start app.js -o /dev/null -e /dev/null --name Enzo --max-memory-restart 200M --restart-delay 100 -- CE=10 NM=EnzoKiosk PORT=7890 WRAPRESPONSE=0 TIMEOUT=200000 URL="https://yedek24.hoteladvisor.net"
 
 var net = require('net');
 const request = require('request');
@@ -13,7 +14,8 @@ exports.conf = {
 	CX:0,//Wether to greet client with ACK+LS|
 	AUTH:0,//LoginToken to be forwarded 
 	TIMEOUT:0,
-	WRAPRESPONSE:1
+	WRAPRESPONSE:1,
+	URL: "https://4001.hoteladvisor.net"
 };
 exports.proxyHeaders = {
 	
@@ -83,7 +85,7 @@ var server = net.createServer((socket)=>{
 			setTimeout(()=>{
 				request({
 					rejectUnauthorized: false,
-					url: "https://4001.hoteladvisor.net/apisequence/"+exports.conf.NM+"?IP="+ip,
+					url: exports.conf.URL+"/apisequence/"+exports.conf.NM+"?IP="+ip,
 					method: "POST",
 					body: fullText,
 					headers: exports.proxyHeaders,
