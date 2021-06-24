@@ -81,8 +81,7 @@ var server = net.createServer((socket)=>{
 			fullText = fullText.substring( 1,fullText.length - 1 );
 			console.log( ip + " sent " + fullText );
 
-			//Send Request To Webservice(with 1sec delay..)
-			setTimeout(()=>{
+			let proxyFn = ()=>{
 				request({
 					rejectUnauthorized: false,
 					url: exports.conf.URL+"/apisequence/"+exports.conf.NM+"?IP="+ip,
@@ -99,9 +98,20 @@ var server = net.createServer((socket)=>{
 						console.log( ip + " was replied with "+resp );
 						if( exports.conf.WRAPRESPONSE == 1 )
 							socket.write(Buffer.from([exports.conf.CE]));
-					}					
-				});	
-			},1000);
+
+						//2021-06-24:oguz:if looping required
+						if( response && response.headers && response.headers["x-other"] === "loop" ){
+							clearTimeout(killtime);
+							killtime = setTimeout( ()=>{ socket.destroy(); console.log("Conection ("+ip+") killed by server") } ,exports.conf["TIMEOUT"]);
+							console.log("LoopMode For ("+fullText+")");
+							setTimeout(()=> proxyFn(),1000);
+						}
+					}
+				});
+			};
+
+			//Send Request To Webservice(with 1sec delay..)
+			setTimeout(()=> proxyFn(),1000);
 		}
 	});
 });
