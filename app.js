@@ -104,7 +104,7 @@ var server = net.createServer((socket)=>{
 							clearTimeout(killtime);
 							killtime = setTimeout( ()=>{ socket.destroy(); console.log("Conection ("+ip+") killed by server") } ,exports.conf["TIMEOUT"]);
 							console.log("LoopMode For ("+fullText+")");
-							setTimeout(()=> proxyFn(),1000);
+							setTimeout(()=> proxyFn(),3000);
 						}
 					}
 				});
