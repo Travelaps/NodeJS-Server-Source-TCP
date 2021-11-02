@@ -90,7 +90,7 @@ var server = net.createServer((socket)=>{
 					headers: exports.proxyHeaders,
 					encoding: null
 				}, (err, response, responseBody) => {
-					if(responseBody != null && responseBody.toString() > ''){
+					if(responseBody != null && responseBody.toString() > '' && !responseBody.toString().includes('Sequence found')){
 						if( exports.conf.WRAPRESPONSE == 1 )
 							socket.write(Buffer.from([exports.conf.CS]));
 						let resp = Buffer.from( responseBody );
