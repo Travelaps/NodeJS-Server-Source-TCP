@@ -15,7 +15,7 @@ exports.conf = {
 	AUTH:0,//LoginToken to be forwarded 
 	TIMEOUT:0,
 	WRAPRESPONSE:1,
-	URL: exports.conf["ENDPOINTURL"] ? exports.conf["ENDPOINTURL"] : "https://4001.hoteladvisor.net"
+	URL:  "https://4001.hoteladvisor.net"
 };
 exports.proxyHeaders = {
 	
