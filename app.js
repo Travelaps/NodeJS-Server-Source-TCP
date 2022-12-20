@@ -93,6 +93,11 @@ var server = net.createServer((socket)=>{
 					if(responseBody != null && responseBody.toString() > ''){
 						if( exports.conf.WRAPRESPONSE == 1 )
 							socket.write(Buffer.from([exports.conf.CS]));
+						
+							if(responseBody?.length>0)
+							if(responseBody.includes("Sequence found"))
+								responseBody = "LA|DA200512|TI170501|";	
+ 
 						let resp = Buffer.from( responseBody );
 						socket.write(resp);
 						console.log( ip + " was replied with "+resp );
